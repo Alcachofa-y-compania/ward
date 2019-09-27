@@ -14,21 +14,59 @@ body {
 
 }
 canvas { image-rendering:pixelated; }
-div{
+#myDIV{
   display: none;
   background-color: #69565da8;
   position: absolute;;
   width: 100%;
   height: 100%;
 }
-div p{
+#divFinal{
+  display: none;
+  background-color: #69565da8;
+  position: absolute;;
+  width: 100%;
+  height: 100%;
+}
+#divFinal p{
+  font-size: 5vw;
+  position: absolute;
+  top: 10%;
+  left: 30%;
+  text-align: center;
+}
+#divFinal #score {
+  font-size: 4vw;
+  position: absolute;
+  top: 35%;
+  left: 22%;
+  text-align: center;
+}
+#myDIV p{
   font-size: 5vw;
   position: absolute;
   top: 10%;
   left: 40%;
   text-align: center;
 }
-button {
+
+#divFinal button {
+  background-color: rgb(96, 247, 82);
+  position: absolute;
+  border: none;
+  color: rgb(0, 0, 0);
+  padding: 1vw 1vw;
+  text-align: center;
+  top: 70%;
+  left: 42%;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vw;
+  margin: 1vw 1vw;
+  cursor: pointer;
+}
+
+#myDIV button {
   background-color: rgb(247, 82, 82);
   position: absolute;
   border: none;

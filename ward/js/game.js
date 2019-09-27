@@ -853,7 +853,7 @@ Juego.Mundo = function(friccion = 0.79) {
   this.jugador       = new Juego.Jugador(20, 60);
 
   this.zona_id      = "00";
-
+  this.juegoTerminado = false;
   this.trampas      = [];
   this.enemigos      = [];
   this.puertas        = [];
@@ -907,6 +907,7 @@ Juego.Mundo.prototype = {
     this.zona_id            = zona.id;
     this.salaFinal = zona.salaFinal;
     console.log(this.salaFinal);
+    this.juegoTerminado = this.salaFinal;
     for (let indice = zona.enemigos.length - 1; indice > -1; -- indice) {
 
       let enemigo = zona.enemigos[indice];

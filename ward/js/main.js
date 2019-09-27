@@ -217,6 +217,11 @@ window.addEventListener("load", function(event) {
       display.buffer.closePath();
     }
     p.innerHTML = "Tiempo: " + tiempoContador;
+
+    if (juego.mundo.juegoTerminado) {
+      score.innerHTML = "Has completado el juego en:" + tiempoContador + " segundos";
+      document.getElementById("divFinal").style.display = "block";
+    } 
     display.render();// y se dibuja todo
     display.postTemblado();
   }
@@ -236,7 +241,7 @@ window.addEventListener("load", function(event) {
         controlador.pausa.active = false;
         mostrarDiv("myDIV");
       } 
-      if(!pausado){
+      if(!pausado && !juego.mundo.juegoTerminado){
         tiempoContador = actualizarContador();
         if(juego.mundo.jugador.muerto == false && !juego.mundo.jugador.atacando ){//reliza las acciones del jugador segun la tecla apretada
           if (controlador.abajo.active) juego.mundo.jugador.caminarAbajo();
@@ -290,6 +295,7 @@ window.addEventListener("load", function(event) {
   var pool      = new Array();
   var particles = new Array();
   var p              = document.createElement("p");
+  var score = this.document.getElementById("score");
   p.setAttribute("style", "color:#c07000; font-size:2.0em; position:fixed;");
   p.innerHTML = "Tiempo: 0";
   document.body.appendChild(p);
