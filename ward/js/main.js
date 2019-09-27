@@ -2,6 +2,7 @@
 window.addEventListener("load", function(event) {
 
   "use strict";
+  comenzarContador();
       //////////////////
     /// constantes ///
   //////////////////
@@ -77,15 +78,16 @@ window.addEventListener("load", function(event) {
     //// Funciones ////
   ///////////////////
 
-  window.onload = function comenzarContador() {
+  function comenzarContador() {
+    console.log("called");
     tiempoDeInicio = new Date();
   };
 
   function actualizarContador() {
     tiempoFinal = new Date();
-    var diferenciaTiempo = tiempoFinal - startTime;//milisegundos 
+    var diferenciaTiempo = tiempoFinal - tiempoDeInicio;//milisegundos 
     diferenciaTiempo /= 1000;//paso a segundos
-    return Math.round(diferenciaTiempo);
+    return Math.round(diferenciaTiempo * 100) / 100;
   }
   function spawnParticulas(target, color){
     console.log("gg");
@@ -214,6 +216,7 @@ window.addEventListener("load", function(event) {
       display.buffer.fill();
       display.buffer.closePath();
     }
+    p.innerHTML = "Tiempo: " + tiempoContador;
     display.render();// y se dibuja todo
     display.postTemblado();
   }
@@ -234,7 +237,7 @@ window.addEventListener("load", function(event) {
         mostrarDiv("myDIV");
       } 
       if(!pausado){
-        actualizarContador();
+        tiempoContador = actualizarContador();
         if(juego.mundo.jugador.muerto == false && !juego.mundo.jugador.atacando ){//reliza las acciones del jugador segun la tecla apretada
           if (controlador.abajo.active) juego.mundo.jugador.caminarAbajo();
           else if (controlador.arriba.active) juego.mundo.jugador.caminarArriba();
@@ -276,7 +279,7 @@ window.addEventListener("load", function(event) {
       /////////////////
     //// objetos ////
   /////////////////
-  var tiempoDeInicio, tiempoFinal;
+  var tiempoDeInicio, tiempoFinal, tiempoContador;
   var gestorAssets = new GestorAssets();
   var controlador     = new Controlador();
   var display        = new Display(document.querySelector("canvas"));
@@ -286,6 +289,10 @@ window.addEventListener("load", function(event) {
   var esChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
   var pool      = new Array();
   var particles = new Array();
+  var p              = document.createElement("p");
+  p.setAttribute("style", "color:#c07000; font-size:2.0em; position:fixed;");
+  p.innerHTML = "Tiempo: 0";
+  document.body.appendChild(p);
       //////////////////////
     /// inicialización ///
   //////////////////////
@@ -311,5 +318,4 @@ window.addEventListener("load", function(event) {
   window.addEventListener("keydown", keyDownUp);
   window.addEventListener("keyup"  , keyDownUp);
   window.addEventListener("resize" , redimensionar);
-
 });
