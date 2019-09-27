@@ -76,6 +76,17 @@ window.addEventListener("load", function(event) {
       ///////////////////
     //// Funciones ////
   ///////////////////
+
+  window.onload = function comenzarContador() {
+    tiempoDeInicio = new Date();
+  };
+
+  function actualizarContador() {
+    tiempoFinal = new Date();
+    var diferenciaTiempo = tiempoFinal - startTime;//milisegundos 
+    diferenciaTiempo /= 1000;//paso a segundos
+    return Math.round(diferenciaTiempo);
+  }
   function spawnParticulas(target, color){
     console.log("gg");
     for (let index = 0; index < 3; ++ index) {
@@ -223,6 +234,7 @@ window.addEventListener("load", function(event) {
         mostrarDiv("myDIV");
       } 
       if(!pausado){
+        actualizarContador();
         if(juego.mundo.jugador.muerto == false && !juego.mundo.jugador.atacando ){//reliza las acciones del jugador segun la tecla apretada
           if (controlador.abajo.active) juego.mundo.jugador.caminarAbajo();
           else if (controlador.arriba.active) juego.mundo.jugador.caminarArriba();
@@ -264,6 +276,7 @@ window.addEventListener("load", function(event) {
       /////////////////
     //// objetos ////
   /////////////////
+  var tiempoDeInicio, tiempoFinal;
   var gestorAssets = new GestorAssets();
   var controlador     = new Controlador();
   var display        = new Display(document.querySelector("canvas"));
