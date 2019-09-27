@@ -661,6 +661,7 @@ Juego.Jugador.prototype = {
     if(!this.muerto && !this.danioRecibido){//si no esta recibiendo daño y no esta muerto puede realizar las acciones
       if(this.moviendose && this.ataqueTerminado && !this.atacando){//si esta moviendose y no esta atacando puede moverse
         //animaciones de movimiendo dependiendo la direccion
+       
         if (this.direccionY < 0) {
 
           if (this.velocidadY < -0.1) this.changeFrameSet(this.frameSets["caminarArriba"], "bucle", 5);
@@ -784,9 +785,10 @@ Juego.Jugador.prototype = {
 
     if (Math.abs(this.velocidadY) > this.velocidadMaxima)
     this.velocidadY = this.velocidadMaxima * Math.sign(this.velocidadY);
-
+    
     this.x    += this.velocidadX;
     this.y    += this.velocidadY;
+    if(this.x <= 0) this.x = 0; //para que no se salga de la pantalla en la sala final
 
   }
 
@@ -903,6 +905,8 @@ Juego.Mundo.prototype = {
     this.columnas            = zona.columnas;
     this.filas               = zona.filas;
     this.zona_id            = zona.id;
+    this.salaFinal = zona.salaFinal;
+    console.log(this.salaFinal);
     for (let indice = zona.enemigos.length - 1; indice > -1; -- indice) {
 
       let enemigo = zona.enemigos[indice];
@@ -988,7 +992,7 @@ Juego.Mundo.prototype = {
 
       let puerta = this.puertas[indice];
 
-      if (puerta.colisionarObjetoCentro(this.jugador)) {
+      if (puerta.colisionarObjetoCentro(this.jugador) && !this.salaFinal) {
 
         this.puerta = puerta;
 

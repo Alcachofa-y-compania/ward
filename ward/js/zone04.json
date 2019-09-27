@@ -2,7 +2,7 @@
 
     "trampas":[],
     "enemigos"  :[],
-  
+    "salaFinal": true,
     "puertas" : [
 
         { "x":1, "y":48, "width":8, "height":32,
