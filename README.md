@@ -12,6 +12,3 @@ Assets utilizados:
 -https://pixel-poem.itch.io/dungeon-assetpuck
 
 Para probar el juego se necesita subir a un servidor, esto se puede hacer con la extension de chrome "Web server": https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
-
-
-
