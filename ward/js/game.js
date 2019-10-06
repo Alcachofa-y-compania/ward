@@ -788,7 +788,7 @@ Juego.Jugador.prototype = {
     
     this.x    += this.velocidadX;
     this.y    += this.velocidadY;
-    if(this.x <= 0) this.x = 0; //para que no se salga de la pantalla en la sala final
+    
 
   }
 
@@ -906,6 +906,8 @@ Juego.Mundo.prototype = {
     this.filas               = zona.filas;
     this.zona_id            = zona.id;
     this.salaFinal = zona.salaFinal;
+    this.salaCompletada = false;
+
     console.log(this.salaFinal);
     this.juegoTerminado = this.salaFinal;
     for (let indice = zona.enemigos.length - 1; indice > -1; -- indice) {
@@ -953,7 +955,7 @@ Juego.Mundo.prototype = {
   update:function() {
 
 
-
+    this.salaCompletada = (this.enemigos.length == 0) ? true : false;
 
     for (let indice = this.trampas.length - 1; indice > -1; -- indice) {
 
@@ -993,7 +995,7 @@ Juego.Mundo.prototype = {
 
       let puerta = this.puertas[indice];
 
-      if (puerta.colisionarObjetoCentro(this.jugador) && !this.salaFinal) {
+      if (puerta.colisionarObjetoCentro(this.jugador) && !this.salaFinal &&this.salaCompletada) {
 
         this.puerta = puerta;
 
