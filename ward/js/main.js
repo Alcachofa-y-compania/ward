@@ -244,6 +244,8 @@ window.addEventListener("load", function(event) {
       if(!pausado && !juego.mundo.juegoTerminado){
         tiempoContador = actualizarContador();
         if(juego.mundo.jugador.muerto == false && !juego.mundo.jugador.atacando ){//reliza las acciones del jugador segun la tecla apretada
+          if(juego.mundo.jugador.x <= 0) juego.mundo.jugador.x = 0; //para que no se salga de la pantalla 
+          if(juego.mundo.jugador.x >= display.buffer.canvas.width) juego.mundo.jugador.x = display.buffer.canvas.width;
           if (controlador.abajo.active) juego.mundo.jugador.caminarAbajo();
           else if (controlador.arriba.active) juego.mundo.jugador.caminarArriba();
   
