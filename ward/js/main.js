@@ -166,9 +166,8 @@ window.addEventListener("load", function(event) {
 
     //-------- ENEMIGOS MUERTOS---------------
     for (let indice = juego.mundo.enemigosMuertos.length - 1; indice > -1; -- indice) {
-
+      
       let enemigo = juego.mundo.enemigosMuertos[indice];
-
       frame = juego.mundo.tile_set.frames[enemigo.valorFrame];
 
       display.dibujarObjeto(gestorAssets.imagenTileSet,
@@ -180,7 +179,7 @@ window.addEventListener("load", function(event) {
     for (let indice = juego.mundo.enemigos.length - 1; indice > -1; -- indice) {
 
       let enemigo = juego.mundo.enemigos[indice];
-
+      if(enemigo.ataqueTerminado && hit.paused && hit.currentTime > 0 && !hit.ended) {hit.playbackRate = Math.random() * 1.4 + 1;hit.play();}
       frame = juego.mundo.tile_set.frames[enemigo.valorFrame];
 
       display.dibujarObjeto(gestorAssets.imagenTileSet,
@@ -227,6 +226,7 @@ window.addEventListener("load", function(event) {
     //segun la accion realizada se invoca la funcion debidas
     if(esChrome){
       if(controlador.pausa.active) {
+        musicaPrincipal.pause();
         pausado = !pausado;
         controlador.pausa.active = false;
         var x = document.getElementById("myDIV");
@@ -237,6 +237,7 @@ window.addEventListener("load", function(event) {
         }
       } 
       if(!pausado && !juego.mundo.juegoTerminado){
+        musicaPrincipal.play();
         tiempoContador = actualizarContador();
         if(juego.mundo.jugador.muerto == false && !juego.mundo.jugador.atacando ){//reliza las acciones del jugador segun la tecla apretada
           if(juego.mundo.jugador.x <= 0) juego.mundo.jugador.x = 0; //para que no se salga de la pantalla 
@@ -292,9 +293,10 @@ window.addEventListener("load", function(event) {
   var esChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
   var pool      = new Array();
   var particles = new Array();
-  var musicaPrincipal = new Audio("./sonidos/AgainstAllOdds.mp3");
+  var musicaPrincipal = new Audio("./sonidos/temaPrincipal.mp3");
+  musicaPrincipal.volume = 0.25;
   var hit = new Audio( './sonidos/hit.wav');
-  hit.volume = .3;
+  hit.volume = .5;
   var p              = document.createElement("p");
   var score = this.document.getElementById("score");
   p.setAttribute("style", "color:#c07000; font-size:2.0em; position:fixed;");
