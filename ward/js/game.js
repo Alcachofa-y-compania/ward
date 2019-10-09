@@ -271,8 +271,6 @@ Juego.Trampa = function(x, y) {
   this.contadorActiva = 0;
   this.contadorInactiva = 0
   this.activa = true;
-  this.base_x     = x;
-  this.base_y     = y;
   this.posicionX = 0;
   this.posicionY = 0;
 
@@ -329,8 +327,6 @@ Juego.Enemigo = function(x, y) {
   this.dir = 0;
   this.velocidadX = .8;
   this.velocidadY = .8;
-  this.base_x     = x;
-  this.base_y     = y;
   this.posicionX = 0;
   this.posicionY = 0;
   

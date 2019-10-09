@@ -179,7 +179,6 @@ window.addEventListener("load", function(event) {
     for (let indice = juego.mundo.enemigos.length - 1; indice > -1; -- indice) {
 
       let enemigo = juego.mundo.enemigos[indice];
-      if(enemigo.ataqueTerminado && hit.paused && hit.currentTime > 0 && !hit.ended) {hit.playbackRate = Math.random() * 1.4 + 1;hit.play();}
       frame = juego.mundo.tile_set.frames[enemigo.valorFrame];
 
       display.dibujarObjeto(gestorAssets.imagenTileSet,
@@ -218,6 +217,7 @@ window.addEventListener("load", function(event) {
     if (juego.mundo.juegoTerminado) {
       score.innerHTML = "Has completado el juego en:" + tiempoContador + " segundos";
       document.getElementById("divFinal").style.display = "block";
+      musicaPrincipal.pause();
     } 
     display.render();// y se dibuja todo
     display.postTemblado();
@@ -296,6 +296,7 @@ window.addEventListener("load", function(event) {
   var musicaPrincipal = new Audio("./sonidos/temaPrincipal.mp3");
   musicaPrincipal.volume = 0.25;
   var hit = new Audio( './sonidos/hit.wav');
+  hit.loop = false;
   hit.volume = .5;
   var p              = document.createElement("p");
   var score = this.document.getElementById("score");
