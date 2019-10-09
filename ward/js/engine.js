@@ -28,7 +28,7 @@ const Motor = function(pasoTiempo, update, render) {
 
     }
      /*desde que solo podemos actualizar cuando la pantalla este lista para dibujar y 
-     solicitudFrameAnimacion llama la funcion correr, hay que hacer un seguimiento de 
+     solicitudFrameAnimacion llama la funcion ejecutar, hay que hacer un seguimiento de 
      cuanto tiempo paso. Se guarda el tiempo acumulado y se prueba si paso lo suficiente para
      una actualizacion. */
     while(this.tiempoAcumulado >= this.pasoTiempo) {

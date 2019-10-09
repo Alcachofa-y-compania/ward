@@ -632,24 +632,24 @@ Juego.Jugador.prototype = {
     if(this.atacando && this.ataqueTerminado)
       if(enemigo.x < this.x && enemigo.x > this.x - 23 && enemigo.y < this.y +15 && enemigo.y > this.y - 15 && this.direccionX < -.5){
         enemigo.knockBack(1);
-        enemigo.recibirDanio(Math.random() * (25 - 1) + 1);
+        enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }
       else if(enemigo.x > this.x && enemigo.x < this.x +23 && enemigo.y < this.y +15 && enemigo.y > this.y - 15 && this.direccionX > .5){
         enemigo.knockBack(-1);
-        enemigo.recibirDanio(Math.random() * (25 - 1) + 1);
+        enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }
       else if(enemigo.y > this.y && enemigo.y < this.y +23 && enemigo.x < this.x +15 && enemigo.x > this.x - 15 && this.direccionY > .5){
         enemigo.knockBack(0, -1);
-        enemigo.recibirDanio(Math.random() * (25 - 1) + 1);
+        enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }else if(enemigo.y < this.y && enemigo.y > this.y - 23 && enemigo.x < this.x +15 && enemigo.x > this.x - 15 && this.direccionY < -.5){
         enemigo.knockBack(0, 1);
-        enemigo.recibirDanio(Math.random() * (25 - 1) + 1);
+        enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }

@@ -8,7 +8,6 @@ window.addEventListener("load", function(event) {
   //////////////////
   const PREFIJO_ZONA = "js/zone";
   const SUFIJO_ZONA = ".json";
-  const hit = document.getElementById("hit").preload;
       /////////////////
     //// Clases /////
   /////////////////
@@ -79,7 +78,6 @@ window.addEventListener("load", function(event) {
   ///////////////////
 
   function comenzarContador() {
-    console.log("called");
     tiempoDeInicio = new Date();
   };
 
@@ -225,21 +223,18 @@ window.addEventListener("load", function(event) {
     display.render();// y se dibuja todo
     display.postTemblado();
   }
-  function mostrarDiv(divID){
-    var x = document.getElementById(divID);
-    if (x.style.display === "block") {
-      x.style.display = "none";
-    } else {
-      x.style.display = "block";
-    }
-  }
   function update(){//bucle del juego
     //segun la accion realizada se invoca la funcion debidas
     if(esChrome){
       if(controlador.pausa.active) {
         pausado = !pausado;
         controlador.pausa.active = false;
-        mostrarDiv("myDIV");
+        var x = document.getElementById("myDIV");
+        if (x.style.display === "block") {
+          x.style.display = "none";
+        } else {
+          x.style.display = "block";
+        }
       } 
       if(!pausado && !juego.mundo.juegoTerminado){
         tiempoContador = actualizarContador();
@@ -252,9 +247,10 @@ window.addEventListener("load", function(event) {
           if (controlador.izquierda.active) juego.mundo.jugador.caminarIzquierda ();
           else if (controlador.derecha.active) juego.mundo.jugador.caminarDerecha();
   
-          if (controlador.ataque.active && !juego.mundo.jugador.danioRecibido) { juego.mundo.jugador.atacar();controlador.ataque.active = false;}
+          if (controlador.ataque.active && !juego.mundo.jugador.danioRecibido) { hit.playbackRate = Math.random() * 1.2 + .8;hit.play(); juego.mundo.jugador.atacar();controlador.ataque.active = false;}
         }
-  
+        if(juego.mundo.jugador.danioRecibido){ hit.volume = 1 ;hit.playbackRate = Math.random() * .7 + .4;hit.play();} 
+        console.log(hit.playbackRate);
         //codigo de las puertas, si paso por una puerta se detiene el motor, se carga un json de la sigiente zona, se carga el mundo y se vuelve a iniciar el motor
         if (juego.mundo.puerta) {
   
@@ -296,6 +292,9 @@ window.addEventListener("load", function(event) {
   var esChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
   var pool      = new Array();
   var particles = new Array();
+  var musicaPrincipal = new Audio("./sonidos/AgainstAllOdds.mp3");
+  var hit = new Audio( './sonidos/hit.wav');
+  hit.volume = .3;
   var p              = document.createElement("p");
   var score = this.document.getElementById("score");
   p.setAttribute("style", "color:#c07000; font-size:2.0em; position:fixed;");
