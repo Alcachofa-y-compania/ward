@@ -332,6 +332,197 @@ Juego.Enemigo = function(x, y) {
   
 
 };
+Juego.Jefe.prototype = {
+
+  frameSets: { "idle":[121, 122, 123, 124, 125, 126, 127, 128, 129, 130 ,131, 132],
+              "caminarDerecha": [45, 46, 47, 48, 49,50, 51, 52, 53, 54, 55, 56, 57],
+              "CaminarIzquierda":[58, 59, 60, 61,62,63, 64, 65, 66, 67, 68, 69, 70],
+              "AtaqueDerechaAbajo": [71, 72, 73, 74, 75, 76 ,77,78],
+              "AtaqueDerechaArriba": [79, 80, 81, 82, 83, 84, 85, 86, 87, 88],
+              "AtaqueIzquierdaAbajo": [89, 90, 91, 92, 93, 94, 95, 96],
+              "AtaqueIzquierdaArriba": [97, 98, 99, 100, 101, 102, 103, 104, 105, 106],
+              "dañoRecibidoDerecha": [107],
+              "dañoRecibidoIzquierda": [108],
+              "muerte": [107, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120],
+              "calabera": [120]},
+  updateJefe:function(jugador) {
+    //friccion
+    this.velocidadY *= .2;
+    this.velocidadX *= .2;
+    //si el enemigo no esta muerto puede moverse y atacar
+    if(!this.muerto){
+      console.log("g")
+      //si esta en rango de ataque en el eje X
+      if((this.x > jugador.x+21 && this.x < jugador.x+24) || (this.x > jugador.x-24 && this.x < jugador.x-21)) this.enRangoX = true;
+      else this.enRangoX = false;
+
+      //si esta en rango de ataque en el eje Y
+      if((this.y < jugador.y+1) && (this.y > jugador.y-1)) this.enRangoY = true;
+      else this.enRangoY = false;
+
+      //si no esta en rango x se mueve hasta estar en rango
+      if(this.enRangoX && this.enRangoY && !this.danioRecibido) this.atacando = true;
+      if(!this.atacando){
+        if(!this.enRangoX && this.atacando == false){
+          if(this.x >= jugador.x+24 || (this.x < jugador.x && this.x > jugador.x-21) && this.atacando == false){
+            this.dir = -1;
+            this.velocidadX += .7;
+          }else if(this.x <= jugador.x-24 || (this.x > jugador.x && this.x < jugador.x+21) && this.atacando == false){
+            this.dir = 1;
+            this.velocidadX -= .7;
+          }
+        }
+
+
+        //si no esta en rango y se mueve hasta estar en rango
+        if(!this.enRangoY && this.atacando == false && !this.danioRecibido){
+          if(this.y > jugador.y+1 && this.atacando == false){
+            this.enRangoY = false;
+            this.velocidadY += .5;
+          }else if(this.y < jugador.y-1 && this.atacando == false){
+            this.enRangoY = false;
+            this.velocidadY -= .5;
+          }
+        }
+
+        //se establece la animacion de que lado camina
+        if(!this.enRangoX || !this.enRangoY && this.atacando == false && !this.danioRecibido){
+          if(this.dir > .5) this.changeFrameSet(this.frameSets["caminarDerecha"], "bucle", 3.5);
+          else if(this.dir < -.5) this.changeFrameSet(this.frameSets["CaminarIzquierda"], "bucle", 3.5);
+        }
+      }
+      //esto esta por si el enemigo se acomodo para estar en rango, para una vez estar en rango mire al jugador
+      if(this.enRangoX){
+        if(this.x > jugador.x) this.dir = -1
+        else this.dir = 1;
+      }
+      //si recibio daño se muestra la animacion
+      if(this.danioRecibido == true) {
+
+        this.contadorDanioRecibido+= .45;
+        if(this.dir > 0) this.changeFrameSet(this.frameSets["dañoRecibidoDerecha"], "bucle", 3);
+        if(this.dir < 0) this.changeFrameSet(this.frameSets["dañoRecibidoIzquierda"], "bucle", 3);
+
+        if(this.contadorDanioRecibido >= (this.retraso)) this.danioRecibido = false;
+      }
+
+      //mientras este en rango y no reciba daño puede atacar
+      if(this.atacando && !this.danioRecibido){
+        if(!jugador.muerteTerminada){
+          if(this.dir > .5){
+            if(this.ataqueTerminado == false && this.levantada == true) {
+
+              this.contadorArriba = 0.0;
+              this.contadorAtaque+= .45;
+              this.changeFrameSet(this.frameSets["AtaqueDerechaAbajo"], "bucle", 2.5);
+              if(this.contadorAtaque >= 8.5){
+                if(jugador.x > this.x && jugador.x < this.x +50 && jugador.y < this.y +15 && jugador.y > this.y - 15) {jugador.recibirDanio(25  ); jugador.knockBack(1)}
+                this.ataqueTerminado = true;
+                this.levantada = false;
+              }
+            }else if(this.levantada == false && this.ataqueTerminado == true){
+              this.contadorAtaque = 0.0;
+              this.contadorArriba+= .45;
+              this.changeFrameSet(this.frameSets["AtaqueDerechaArriba"], "bucle", 2.5);
+              if(this.contadorArriba >= 8.5){
+                this.atacando = false;
+                this.ataqueTerminado = false;
+                this.levantada = true;
+              }
+            }
+          }else{
+
+              if(this.ataqueTerminado == false && this.levantada == true) {
+
+                this.contadorArriba = 0.0;
+                this.contadorAtaque+= .45;
+                this.changeFrameSet(this.frameSets["AtaqueIzquierdaAbajo"], "bucle", 2.5);
+                if(this.contadorAtaque >= 8.5){
+                  if(jugador.x < this.x && jugador.x > this.x - 50 && jugador.y < this.y +15 && jugador.y > this.y - 15) {jugador.recibirDanio(25); jugador.knockBack(-1)}
+                  this.ataqueTerminado = true;
+                  this.levantada = false;
+                }
+              }else if(this.levantada == false && this.ataqueTerminado == true){
+                this.contadorAtaque = 0.0;
+                this.contadorArriba+= .45;
+                this.changeFrameSet(this.frameSets["AtaqueIzquierdaArriba"], "bucle", 2.5);
+                if(this.contadorArriba >= 8.5){
+                  this.atacando = false;
+                  this.ataqueTerminado = false;
+                  this.levantada = true;
+                }
+              }
+            }
+        }else{
+           this.changeFrameSet(this.frameSets["idle"], "bucle", 3);
+        }
+      }else{
+        this.contadorAtaque = 0.0;
+        this.atacando = false;
+        this.ataqueTerminado = false;
+        this.levantada = true;
+      }
+      this.y   -= this.velocidadY;
+      this.x    -= this.velocidadX;
+    }else{
+      //animacion de muerte
+      if(this.muerteTerminada == false) {
+        this.contadorMuerte+= .45;
+        this.changeFrameSet(this.frameSets["muerte"], "bucle", 5);
+        if(this.contadorMuerte >= 25) this.muerteTerminada = true;
+      }else if(this.muerteTerminada) this.changeFrameSet(this.frameSets["calabera"], "pausado");
+    }
+
+
+
+
+    this.animar();
+  },
+  //metodo para recibir daño
+  recibirDanio:function(danio) {
+    this.vida -= danio;
+  },
+  knockBack:function(direccionX, direccionY){
+    if(direccionX > 0) this.velocidadX = 50;
+    if(direccionX < 0) this.velocidadX = -50;
+    if(direccionY > 0) this.velocidadY = 50;
+    if(direccionY < 0) this.velocidadY = -50;
+  }
+};
+
+Object.assign(Juego.Jefe.prototype, Juego.Animador.prototype);
+Object.assign(Juego.Jefe.prototype, Juego.ObjetoEnMovimiento.prototype);
+Juego.Jefe.prototype.constructor = Juego.Jefe;
+
+
+//----------------Enemigo---------------------
+Juego.Enemigo = function(x, y) {
+
+  Juego.ObjetoEnMovimiento.call(this, x, y, 7, 12);
+  Juego.Animador.call(this, Juego.Enemigo.prototype.frameSets["idle"], 15);
+  this.contadorMuerte = 0;
+  this.muerto = false;
+  this.muerteTerminada = false;
+  this.danioRecibido = false;
+  this.contadorDanioRecibido = 0;
+  this.vida = 100;
+  this.vidaActual = 100;
+  this.ataqueTerminado = false;
+  this.retraso = 5;
+  this.contadorAtaque = 0;
+  this.contadorArriba = 0;
+  this.levantada = true;
+  this.atacando = false;
+  this.enRangoY = false;
+  this.enRangoX = false;
+  this.dir = 0;
+  this.velocidadX = .8;
+  this.velocidadY = .8;
+  this.posicionX = 0;
+  this.posicionY = 0;
+  
+
+};
 Juego.Enemigo.prototype = {
 
   frameSets: { "idle":[121, 122, 123, 124, 125, 126, 127, 128, 129, 130 ,131, 132],
