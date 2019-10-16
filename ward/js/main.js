@@ -88,7 +88,6 @@ window.addEventListener("load", function(event) {
     return Math.round(diferenciaTiempo * 100) / 100;
   }
   function spawnParticulas(target, color){
-    console.log("gg");
     for (let index = 0; index < 3; ++ index) {
       let particle = pool.pop();
       if (particle != undefined) {
@@ -248,7 +247,7 @@ window.addEventListener("load", function(event) {
           if (controlador.izquierda.active) juego.mundo.jugador.caminarIzquierda ();
           else if (controlador.derecha.active) juego.mundo.jugador.caminarDerecha();
   
-          if (controlador.ataque.active && !juego.mundo.jugador.danioRecibido) { hit.playbackRate = Math.random() * 1.2 + .8;hit.play(); juego.mundo.jugador.atacar();controlador.ataque.active = false;}
+          if (controlador.ataque.active && !juego.mundo.jugador.danioRecibido) {  hit.volume = .5; hit.playbackRate = Math.random() * 1.2 + .8;hit.play(); juego.mundo.jugador.atacar();controlador.ataque.active = false;}
         }
         if(juego.mundo.jugador.danioRecibido){ hit.volume = 1 ;hit.playbackRate = Math.random() * .7 + .4;hit.play();} 
         console.log(hit.playbackRate);
@@ -297,7 +296,6 @@ window.addEventListener("load", function(event) {
   musicaPrincipal.volume = 0.25;
   var hit = new Audio( './sonidos/hit.wav');
   hit.loop = false;
-  hit.volume = .5;
   var p              = document.createElement("p");
   var score = this.document.getElementById("score");
   p.setAttribute("style", "color:#c07000; font-size:2.0em; position:fixed;");
