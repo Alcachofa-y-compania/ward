@@ -305,17 +305,18 @@ Object.assign(Juego.Trampa.prototype, Juego.Objeto.prototype);
 Juego.Trampa.prototype.constructor = Juego.Trampa;
 
 //----------------Enemigo---------------------
-Juego.Enemigo = function(x, y) {
+Juego.Jefe = function(x, y) {
 
   Juego.ObjetoEnMovimiento.call(this, x, y, 7, 12);
-  Juego.Animador.call(this, Juego.Enemigo.prototype.frameSets["idle"], 15);
+  Juego.Animador.call(this, Juego.Jefe.prototype.frameSets["idle"], 15);
   this.contadorMuerte = 0;
   this.muerto = false;
   this.muerteTerminada = false;
   this.danioRecibido = false;
   this.contadorDanioRecibido = 0;
-  this.vida = 100;
-  this.vidaActual = 100;
+  this.vida = 800;
+  this.vidaActual = 800;
+  this.vidaMaxima = 800;
   this.ataqueTerminado = false;
   this.retraso = 5;
   this.contadorAtaque = 0;
@@ -346,12 +347,12 @@ Juego.Jefe.prototype = {
               "muerte": [107, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120],
               "calabera": [120]},
   updateJefe:function(jugador) {
+    console.log("vida: " + this.vidaActual);
     //friccion
     this.velocidadY *= .2;
     this.velocidadX *= .2;
     //si el enemigo no esta muerto puede moverse y atacar
     if(!this.muerto){
-      console.log("g")
       //si esta en rango de ataque en el eje X
       if((this.x > jugador.x+21 && this.x < jugador.x+24) || (this.x > jugador.x-24 && this.x < jugador.x-21)) this.enRangoX = true;
       else this.enRangoX = false;
@@ -537,12 +538,12 @@ Juego.Enemigo.prototype = {
               "muerte": [107, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120],
               "calabera": [120]},
   updateEnemigo:function(jugador) {
+    console.log("vida: " + this.vidaActual);
     //friccion
     this.velocidadY *= .2;
     this.velocidadX *= .2;
     //si el enemigo no esta muerto puede moverse y atacar
     if(!this.muerto){
-      console.log("g")
       //si esta en rango de ataque en el eje X
       if((this.x > jugador.x+21 && this.x < jugador.x+24) || (this.x > jugador.x-24 && this.x < jugador.x-21)) this.enRangoX = true;
       else this.enRangoX = false;
@@ -1043,6 +1044,7 @@ Juego.Mundo = function(friccion = 0.79) {
   this.juegoTerminado = false;
   this.trampas      = [];
   this.enemigos      = [];
+  this.jefe      = [];
   this.puertas        = [];
   this.puerta         = undefined;
 
@@ -1085,6 +1087,7 @@ Juego.Mundo.prototype = {
 
     this.trampas            = new Array();
     this.enemigos            = new Array();
+    this.jefe            = new Array();
     this.enemigosMuertos            = new Array();
     this.puertas              = new Array();
     this.mapaColisiones      = zona.mapaColisiones;
@@ -1094,16 +1097,18 @@ Juego.Mundo.prototype = {
     this.zona_id            = zona.id;
     this.salaFinal = zona.salaFinal;
     this.salaCompletada = false;
-
-    console.log(this.salaFinal);
-    this.juegoTerminado = this.salaFinal;
     for (let indice = zona.enemigos.length - 1; indice > -1; -- indice) {
 
       let enemigo = zona.enemigos[indice];
       this.enemigos[indice] = new Juego.Enemigo((enemigo[0]-1) * this.tile_set.tamanioTile +5, (enemigo[1]-1) * this.tile_set.tamanioTile + 12);
 
     }
+    for (let indice = zona.jefe.length - 1; indice > -1; -- indice) {
 
+      let jefe = zona.jefe[indice];
+      this.jefe[indice] = new Juego.Jefe((jefe[0]-1) * this.tile_set.tamanioTile +5, (jefe[1]-1) * this.tile_set.tamanioTile + 12);
+
+    }
     for (let indice = zona.trampas.length - 1; indice > -1; -- indice) {
 
       let trampa = zona.trampas[indice];
@@ -1143,7 +1148,6 @@ Juego.Mundo.prototype = {
 
 
     this.salaCompletada = (this.enemigos.length == 0) ? true : false;
-
     for (let indice = this.trampas.length - 1; indice > -1; -- indice) {
 
       let trampa = this.trampas[indice];
@@ -1172,7 +1176,18 @@ Juego.Mundo.prototype = {
       }
       if(enemigo.vidaActual > enemigo.vida) enemigo.vidaActual -=1;
     }
+    for (let indice = this.jefe.length - 1; indice > -1; -- indice) {
 
+      let boss = this.jefe[indice];
+      boss.updateJefe(this.jugador);
+      this.colisionarObjeto(boss);
+      this.jugador.checkEnemigoRangoAtaque(boss);
+      if(boss.vida <= 0) {//mientras este vivo se mqantiene en el arreglo el enemigo, en caso de no estarlo cambia a otro, solo por cuestiones esteticas
+        boss.muerto = true;
+        this.juegoTerminado = true;
+      }
+      if(boss.vidaActual > boss.vida) boss.vidaActual -=1;
+    }
     for (let indice = this.enemigosMuertos.length - 1; indice > -1; -- indice) {
       let enemigo = this.enemigosMuertos[indice];
       enemigo.updateEnemigo(this.jugador);

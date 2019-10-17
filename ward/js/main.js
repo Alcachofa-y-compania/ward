@@ -105,19 +105,23 @@ window.addEventListener("load", function(event) {
     else if(objeto.vidaActual <75 && objeto.vidaActual >= 50) color = "#deff4a";
     else if(objeto.vidaActual < 50 && objeto.vidaActual >= 25) color = "#ffa84a";
     else if(objeto.vidaActual < 25)color = "#ff4d4a";
-
-    //Barra negra de fondo
-    display.buffer.fillStyle="#262523";
-    display.buffer.fillRect( Math.floor(objeto.x-4), Math.floor(objeto.y -8),15,2);
-    //barra roja que decrese hasta llegar al valor de vida
-    display.buffer.fillStyle="#ff4d4a";
-    display.buffer.fillRect( Math.floor(objeto.x-4), Math.floor(objeto.y -8),(objeto.vidaActual/100)*15  ,2);
-    display.buffer.fillStyle=color;
-    //barra que muestra la vida hasta que tiene que llegar la vida actual
-    display.buffer.fillRect( Math.floor(objeto.x-4), Math.floor(objeto.y -8),(objeto.vida/100)*15,2);
-    display.buffer.fillStyle="#ffffff";
+    drawBarraDeVida(Math.floor(objeto.x-4), Math.floor(objeto.y -8), color, 15, 2, (objeto.vidaActual/100), (objeto.vida/100));
+    
   }
 
+  function drawBarraDeVida(posX, posY, color, largo, alto, valor, valor2, valorMaximo){
+    //Barra negra de fondo
+    display.buffer.fillStyle="#262523";
+    console.log(valor + ", " + valor2 );
+    display.buffer.fillRect( posX, posY , largo,alto);
+    //barra roja que decrese hasta llegar al valor de vida
+    display.buffer.fillStyle="#ff4d4a";
+    display.buffer.fillRect(posX, posY ,valor/valorMaximo*largo  ,alto);
+    display.buffer.fillStyle=color;
+    //barra que muestra la vida hasta que tiene que llegar la vida actual
+    display.buffer.fillRect(posX, posY ,valor2/valorMaximo*largo,alto);
+    display.buffer.fillStyle="#ffffff";
+  }
   function volverACargar(){
     motor.parar();
 
@@ -187,7 +191,20 @@ window.addEventListener("load", function(event) {
       if(enemigo.danioRecibido) spawnParticulas(enemigo, "#ffffff")
       mostrarBarraDeVida(enemigo);
     }//lo mismo que las trampas
+//-------- Jefe VIVO---------------
+    for (let indice = juego.mundo.jefe.length - 1; indice > -1; -- indice) {
 
+      let boss = juego.mundo.jefe[indice];
+      frame = juego.mundo.tile_set.frames[boss.valorFrame];
+
+      display.dibujarObjeto(gestorAssets.imagenTileSet,
+      frame.x, frame.y,
+      Math.floor(boss.x + boss.width * 0.5 - frame.width * 0.5) + frame.offset_x,
+      Math.floor(boss.y + frame.offset_y), frame.width, frame.height);
+      if(boss.danioRecibido) spawnParticulas(boss, "#ffffff")
+      
+      drawBarraDeVida(10, 2, "#4aff7a", 180,  10, boss.vidaActual, boss.vida, boss.vidaMaxima);
+    }
     //-------- JUGADOR ---------------
     frame = juego.mundo.tile_set.frames[juego.mundo.jugador.valorFrame];
 
@@ -250,7 +267,6 @@ window.addEventListener("load", function(event) {
           if (controlador.ataque.active && !juego.mundo.jugador.danioRecibido) {  hit.volume = .5; hit.playbackRate = Math.random() * 1.2 + .8;hit.play(); juego.mundo.jugador.atacar();controlador.ataque.active = false;}
         }
         if(juego.mundo.jugador.danioRecibido){ hit.volume = 1 ;hit.playbackRate = Math.random() * .7 + .4;hit.play();} 
-        console.log(hit.playbackRate);
         //codigo de las puertas, si paso por una puerta se detiene el motor, se carga un json de la sigiente zona, se carga el mundo y se vuelve a iniciar el motor
         if (juego.mundo.puerta) {
   

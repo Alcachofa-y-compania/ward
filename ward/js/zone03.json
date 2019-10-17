@@ -1,6 +1,7 @@
 {
 
     "trampas":[],
+    "jefe": [],
     "enemigos"  :[[7,1],[5,3], [4,8], [7, 8],[6, 7],[4, 7]],
     "salaFinal": false,
     "puertas" : [
