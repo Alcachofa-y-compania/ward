@@ -326,8 +326,8 @@ Juego.Jefe = function(x, y) {
   this.enRangoY = false;
   this.enRangoX = false;
   this.dir = 0;
-  this.velocidadX = .8;
-  this.velocidadY = .8;
+  this.velocidadX = 2;
+  this.velocidadY = 2;
   this.posicionX = 0;
   this.posicionY = 0;
   
@@ -349,8 +349,8 @@ Juego.Jefe.prototype = {
   updateJefe:function(jugador) {
     console.log("vida: " + this.vidaActual);
     //friccion
-    this.velocidadY *= .2;
-    this.velocidadX *= .2;
+    this.velocidadY *= .45;
+    this.velocidadX *= .45;
     //si el enemigo no esta muerto puede moverse y atacar
     if(!this.muerto){
       //si esta en rango de ataque en el eje X
@@ -362,7 +362,7 @@ Juego.Jefe.prototype = {
       else this.enRangoY = false;
 
       //si no esta en rango x se mueve hasta estar en rango
-      if(this.enRangoX && this.enRangoY && !this.danioRecibido) this.atacando = true;
+      if(this.enRangoX && this.enRangoY) this.atacando = true;
       if(!this.atacando){
         if(!this.enRangoX && this.atacando == false){
           if(this.x >= jugador.x+24 || (this.x < jugador.x && this.x > jugador.x-21) && this.atacando == false){
@@ -376,7 +376,7 @@ Juego.Jefe.prototype = {
 
 
         //si no esta en rango y se mueve hasta estar en rango
-        if(!this.enRangoY && this.atacando == false && !this.danioRecibido){
+        if(!this.enRangoY && this.atacando == false){
           if(this.y > jugador.y+1 && this.atacando == false){
             this.enRangoY = false;
             this.velocidadY += .5;
@@ -408,7 +408,7 @@ Juego.Jefe.prototype = {
       }
 
       //mientras este en rango y no reciba daño puede atacar
-      if(this.atacando && !this.danioRecibido){
+      if(this.atacando){
         if(!jugador.muerteTerminada){
           if(this.dir > .5){
             if(this.ataqueTerminado == false && this.levantada == true) {
@@ -483,12 +483,6 @@ Juego.Jefe.prototype = {
   recibirDanio:function(danio) {
     this.vida -= danio;
   },
-  knockBack:function(direccionX, direccionY){
-    if(direccionX > 0) this.velocidadX = 50;
-    if(direccionX < 0) this.velocidadX = -50;
-    if(direccionY > 0) this.velocidadY = 50;
-    if(direccionY < 0) this.velocidadY = -50;
-  }
 };
 
 Object.assign(Juego.Jefe.prototype, Juego.Animador.prototype);
@@ -501,6 +495,7 @@ Juego.Enemigo = function(x, y) {
 
   Juego.ObjetoEnMovimiento.call(this, x, y, 7, 12);
   Juego.Animador.call(this, Juego.Enemigo.prototype.frameSets["idle"], 15);
+  this.vidaMaxima = 100;
   this.contadorMuerte = 0;
   this.muerto = false;
   this.muerteTerminada = false;
@@ -714,6 +709,7 @@ Juego.Jugador = function(x, y) {
   this.danioRecibido = false;
   this.vida = 100;
   this.vidaActual = 100;
+  this.vidaMaxima = 100;
   this.ataqueTerminado = false;
   this.retraso = 5;
   this.contadorAtaque = 0;
@@ -816,27 +812,27 @@ Juego.Jugador.prototype = {
     this.vidaActual = 100;
   },
   //metodo para ver si el enemigo esta en rango, en caso de estar este recibe daño
-  checkEnemigoRangoAtaque:function(enemigo){
+  checkEnemigoRangoAtaque:function(enemigo, knockBack){
     if(this.atacando && this.ataqueTerminado)
       if(enemigo.x < this.x && enemigo.x > this.x - 23 && enemigo.y < this.y +15 && enemigo.y > this.y - 15 && this.direccionX < -.5){
-        enemigo.knockBack(1);
+        if(knockBack) enemigo.knockBack(1);
         enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }
       else if(enemigo.x > this.x && enemigo.x < this.x +23 && enemigo.y < this.y +15 && enemigo.y > this.y - 15 && this.direccionX > .5){
-        enemigo.knockBack(-1);
+        if(knockBack) enemigo.knockBack(-1);
         enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }
       else if(enemigo.y > this.y && enemigo.y < this.y +23 && enemigo.x < this.x +15 && enemigo.x > this.x - 15 && this.direccionY > .5){
-        enemigo.knockBack(0, -1);
+        if(knockBack) enemigo.knockBack(0, -1);
         enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
       }else if(enemigo.y < this.y && enemigo.y > this.y - 23 && enemigo.x < this.x +15 && enemigo.x > this.x - 15 && this.direccionY < -.5){
-        enemigo.knockBack(0, 1);
+        if(knockBack) enemigo.knockBack(0, 1);
         enemigo.recibirDanio(Math.random() * (40 - 1) + 1);
         enemigo.danioRecibido = true;
         enemigo.contadorDanioRecibido = 0;
@@ -1023,6 +1019,9 @@ Juego.TileSet = function(columnas, tamanioTile) {
                  new f(88, 1121, 23, 28, 0, -16),new f(121, 1151, 24, 25, 0, -4), new f(22, 1151, 25, 16, 0, -2), new f(51, 1159, 30, 8, 0, 6), new f(84, 1160, 30, 7, 0, 6), new f(117, 1160, 30, 7, 0, 6), //muerte
                  new f(5, 1190, 22, 32, 0, -16), new f(29, 1190, 22, 32, 0, -16), new f(53, 1190, 22, 32, 0, -16), new f(77, 1190, 22, 32, 0, -16), new f(102, 1190, 22, 32, 0, -16),
                  new f(5, 1227, 22, 32, 0, -16), new f(29, 1227, 22, 32, 0, -16), new f(52, 1227, 22, 32, 0, -16), new f(75, 1227, 22, 32, 0, -16), new f(99, 1227, 22, 32, 0, -16), new f(123, 1227, 22, 32, 0, -16), //Idle Esqueleto
+                 new f(0, 1284, 52, 40, 0, -16), new f(53, 1284, 52, 40, 0, -16), new f(108, 1284, 52, 41, 0, -16), new f(0, 1332, 52, 41, 0, -16), new f(107, 1333, 52, 40, 0, -16), //Jefe camina frentes
+                 new f(0,1381, 56, 45, 0, -16 ), new f(66,1373, 70, 65, 0, -16 ), new f(8,1435, 65, 65, 0, -16 ), new f(88,1444, 57, 63 , 0, -16 ), new f(18,1513, 55, 46 , 0, -16 ), new f(98,1547, 49, 46 , 0, -16),new f(13,1569, 49, 46 , 0, -16),//ataque abajo
+                 new f(88, 1570, 48, 41, 0, -16),//ataque arriba
                 ];
 
 };
@@ -1167,7 +1166,7 @@ Juego.Mundo.prototype = {
       let enemigo = this.enemigos[indice];
       enemigo.updateEnemigo(this.jugador);
       this.colisionarObjeto(enemigo);
-      this.jugador.checkEnemigoRangoAtaque(enemigo);
+      this.jugador.checkEnemigoRangoAtaque(enemigo, true);
       if(enemigo.vida <= 0) {//mientras este vivo se mqantiene en el arreglo el enemigo, en caso de no estarlo cambia a otro, solo por cuestiones esteticas
         enemigo.muerto = true;
         enemigo.updateEnemigo(this.jugador);
@@ -1181,7 +1180,7 @@ Juego.Mundo.prototype = {
       let boss = this.jefe[indice];
       boss.updateJefe(this.jugador);
       this.colisionarObjeto(boss);
-      this.jugador.checkEnemigoRangoAtaque(boss);
+      this.jugador.checkEnemigoRangoAtaque(boss, false);
       if(boss.vida <= 0) {//mientras este vivo se mqantiene en el arreglo el enemigo, en caso de no estarlo cambia a otro, solo por cuestiones esteticas
         boss.muerto = true;
         this.juegoTerminado = true;

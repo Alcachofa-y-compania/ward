@@ -105,7 +105,7 @@ window.addEventListener("load", function(event) {
     else if(objeto.vidaActual <75 && objeto.vidaActual >= 50) color = "#deff4a";
     else if(objeto.vidaActual < 50 && objeto.vidaActual >= 25) color = "#ffa84a";
     else if(objeto.vidaActual < 25)color = "#ff4d4a";
-    drawBarraDeVida(Math.floor(objeto.x-4), Math.floor(objeto.y -8), color, 15, 2, (objeto.vidaActual/100), (objeto.vida/100));
+    drawBarraDeVida(Math.floor(objeto.x-4), Math.floor(objeto.y -8), color, 15, 2, objeto.vidaActual, objeto.vida, objeto.vidaMaxima);
     
   }
 
